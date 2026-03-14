@@ -75,11 +75,14 @@ def render_tables(monthly, product, month_product):
     st.dataframe(month_product)
 
 
-def render_analysis_result(industry, final_summary, monthly, product, month_product, pdf_data):
+def render_analysis_result(industry, final_summary, monthly, product, month_product, pdf_data, ai_comment):
     st.success("분석 완료!")
 
     st.subheader("선택한 업종")
     st.write(industry)
+
+    st.subheader("AI 매출 분석 코멘트")
+    st.info(ai_comment)
 
     st.subheader("요약 리포트")
     st.text(final_summary)

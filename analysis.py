@@ -480,3 +480,37 @@ def build_highlight_insights(monthly: pd.DataFrame, product: pd.DataFrame, month
         lines.append("성장/하락 상품: 분석할 2개월 이상 데이터 부족")
 
     return lines
+
+def normalize_column_name(col_name: str) -> str:
+    return str(col_name).strip().lower().replace(" ", "").replace("_", "")
+
+
+def guess_column_mapping(columns: list[str]) -> dict:
+    month_candidates = ["month", "월", "monthnum", "monthnumber"]
+    date_candidates = ["date", "날짜", "판매일", "주문일", "orderdate", "datetime", "일자"]
+    product_candidates = ["product", "상품", "상품명", "menu", "메뉴", "메뉴명", "item", "품목"]
+    sales_candidates = ["sales", "매출", "매출액", "amount", "revenue", "price", "금액"]
+
+    normalized_map = {col: normalize_column_name(col) for col in columns}
+
+    guessed = {
+        "month_col": None,
+        "date_col": None,
+        "product_col": None,
+        "sales_col": None,
+    }
+
+    for original, normalized in normalized_map.items():
+        if guessed["month_col"] is None and normalized in [normalize_column_name(x) for x in month_candidates]:
+            guessed["month_col"] = original
+
+        if guessed["date_col"] is None and normalized in [normalize_column_name(x) for x in date_candidates]:
+            guessed["date_col"] = original
+
+        if guessed["product_col"] is None and normalized in [normalize_column_name(x) for x in product_candidates]:
+            guessed["product_col"] = original
+
+        if guessed["sales_col"] is None and normalized in [normalize_column_name(x) for x in sales_candidates]:
+            guessed["sales_col"] = original
+
+    return guessed
